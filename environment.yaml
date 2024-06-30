@@ -1,0 +1,33 @@
+name: pwm
+channels:
+  - pytorch
+  - defaults
+  - nvidia
+dependencies:
+  - python=3.10
+  - pytorch
+  - torchvision
+  - pytorch-cuda=11.8
+  - cuda-toolkit=11.8
+  - pandas
+  - matplotlib
+  - seaborn
+  - notebook
+  - glew=2.1.0 # for mujoco
+  - pip
+  - pip:
+      - tensordict
+      - torchrl
+      - hydra-submitit-launcher
+      - wandb
+      - black
+      - termcolor
+      - tqdm
+      - rl_games # used as a baseline for comparison. Not required!
+      # dflex simulator is used for examples. It is not required for the library.
+      - git+https://github.com/imgeorgiev/DiffRL.git/#subdirectory=dflex
+      - dm-control==1.0.8
+      - mujoco==2.3.1
+      - mujoco-py==2.1.2.14
+      - "cython<3" # for mujoco
+

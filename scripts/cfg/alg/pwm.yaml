@@ -1,0 +1,60 @@
+_target_: pwm.algorithms.pwm.PWM
+_recursive_: False
+actor_config:
+  _target_: pwm.models.actor.ActorStochasticMLP
+  units: [400, 200, 100]
+  activation_class: nn.Mish
+  init_gain: 1.0
+  init_logstd: -1.0
+  min_logstd: -1.427
+critic_config:
+  _target_: pwm.models.critic.CriticMLP
+  units: [400, 200]
+  activation_class: nn.Mish
+world_model_config:
+  _target_: pwm.models.world_model.WorldModel
+  units: [512, 512]
+  encoder_units: [256]
+  num_bins: 
+  vmin: 
+  vmax: 
+  encoder:
+    last_layer: normedlinear
+    last_layer_kwargs:
+      act:
+        _target_: pwm.models.mlp.SimNorm
+        simnorm_dim: 8
+  dynamics:
+    last_layer: normedlinear
+    last_layer_kwargs:
+      act:
+        _target_: pwm.models.mlp.SimNorm
+        simnorm_dim: 8
+  reward:
+    last_layer: linear
+    last_layer_kwargs: {}
+num_critics: 3
+latent_dim: 512
+actor_lr: 5e-4
+critic_lr: 5e-4
+model_lr: 3e-4
+lr_schedule: linear
+obs_rms: False
+rew_rms: True
+ret_rms: True
+critic_iterations: 8
+critic_batches: 4
+critic_method: td-lambda # ('td-lambda', 'one-step')
+lam: 0.95
+gamma: 0.99
+max_epochs: 15_000 # assuming 64 actor batch size / num envs
+horizon: 16
+actor_grad_norm: 1.0 # Can also be none
+critic_grad_norm: 100.0 # Can also be none; doesn't matter
+wm_batch_size: 256
+wm_iterations: 8
+wm_grad_norm: 20.0
+wm_buffer_size: 1_000_000
+detach: True
+save_interval: 2500
+device: ${general.device}

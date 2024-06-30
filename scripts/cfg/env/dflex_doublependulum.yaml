@@ -1,0 +1,19 @@
+config:
+  _target_: dflex.envs.double_pendulum.DoublePendulumEnv
+  render: ${general.render}
+  device: ${general.device}
+  num_envs: 1024
+  stochastic_init: True
+  no_grad: False
+  episode_length: 240
+  MM_caching_frequency: 8
+
+shac:
+  actor_lr: 2e-3
+  critic_lr: 5e-4
+  max_epochs: 200
+  save_interval: 100
+  actor_mlp:
+    units: [400, 200, 100]
+  critic_mlp:
+    units: [400, 200]

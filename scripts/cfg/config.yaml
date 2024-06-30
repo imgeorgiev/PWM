@@ -1,0 +1,24 @@
+defaults:
+  - _self_
+  - env: dflex_ant
+  - alg: shac
+
+general:
+  train: True
+  logdir: logs
+  render: False
+  device: cuda:0
+  run_wandb: False
+  seed: 42
+  checkpoint:
+  checkpoint_with_buffer: False
+  eval_runs: 12
+  pretrain: 
+  # pretrain: /storage/home/hcoda1/7/igeorgiev3/git/FoWM/data/dflex-hopper/ep_data_HopperEnv_ep131072_1.pt
+  # pretrain: /storage/home/hcoda1/7/igeorgiev3/git/FoWM/data/dflex-cartpole/ep_data_CartPoleSwingUpEnv_ep67584_1.pt
+  pretrain_steps: 50000
+
+wandb:
+  project: fowm
+  entity: pair-diffusion
+  group: 

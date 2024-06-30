@@ -1,0 +1,59 @@
+defaults:
+  - _self_
+  - alg: pwm_48M
+  # - override hydra/launcher: submitit_local
+
+# hydra:
+#   launcher:
+#     nodes: 3
+#     mem_per_gpu: 48
+#     timeout_min: 480
+#     qos: embers
+#     gres: "gpu:RTX_6000:1"
+#     account: gts-agarg35
+
+general:
+  train: True
+  logdir: logs
+  render: False
+  device: cuda:0
+  run_wandb: False
+  seed: 42
+  checkpoint: /storage/home/hcoda1/7/igeorgiev3/git/FoWM/wmlab/logs/mt30/1/fowm_model/models/4900000.pt
+  checkpoint_with_buffer: False
+  eval_runs: 10
+  pretrain_steps: 50000
+  multitask: True
+
+wandb:
+  project: fowm
+  entity: pair-diffusion
+  group: 
+
+obs: state
+task: reacher-easy
+seed: ${general.seed}
+tasks: ???
+multitask: True
+work_dir: ???
+task_title: ???
+obs_shape: ???
+action_dim: ???
+episode_length: ???
+obs_shapes: ???
+action_dims: ???
+episode_lengths: ???
+seed_steps: ???
+bin_size: ???
+epochs: 10_000
+eval_freq: 200
+horizon: 15
+data_dir: /storage/coda1/p-agarg35/0/shared/tdmpc2-datasets/mt30
+finetune_wm: False
+
+buffer:
+  _target_: pwm.utils.buffer.Buffer
+  buffer_size: ???
+  batch_size: 512
+  horizon: ${horizon}
+  device: ${general.device}

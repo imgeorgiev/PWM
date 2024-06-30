@@ -1,0 +1,29 @@
+_target_: pwm.algorithms.shac.SHAC
+_recursive_: False
+actor_config:
+  _target_: pwm.models.actor.ActorStochasticMLP
+  units: ${resolve_child:[400, 200, 100],${env.shac.actor_mlp},units}
+  activation_class: nn.Mish
+  init_gain: 1.0
+  init_logstd: -1.0
+critic_config:
+  _target_: pwm.models.critic.CriticMLP
+  units: ${resolve_child:[400, 200],${env.shac.critic_mlp},units}
+  activation_class: nn.Mish
+num_critics: 3
+actor_lr: ${resolve_child:2e-3,${env.shac},actor_lr}
+critic_lr: ${resolve_child:5e-4,${env.shac},critic_lr}
+lr_schedule: linear
+obs_rms: True
+ret_rms: True
+critic_iterations: 16
+critic_batches: 4
+critic_method: td-lambda # ('td-lambda', 'one-step')
+lam: 0.95
+gamma: 0.99
+max_epochs: ${resolve_child:2000,${env.shac},max_epochs}
+horizon: 32
+actor_grad_norm: 1.0 # Can also be none
+critic_grad_norm: 100.0 # Can also be none
+save_interval: ${resolve_child:400,${env.shac},save_interval}
+device: ${general.device}
