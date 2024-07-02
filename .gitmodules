@@ -1,0 +1,3 @@
+[submodule "external/tdmpc2"]
+	path = external/tdmpc2
+	url = git@github.com:imgeorgiev/tdmpc2.git
