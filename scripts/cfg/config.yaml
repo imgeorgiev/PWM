@@ -6,17 +6,15 @@ defaults:
 general:
   train: True
   logdir: logs
-  render: False
+  render: False # rendering is computationally expensive
   device: cuda:0
   run_wandb: False
   seed: 42
-  checkpoint:
-  checkpoint_with_buffer: False
-  eval_runs: 12
-  pretrain: 
-  # pretrain: /storage/home/hcoda1/7/igeorgiev3/git/FoWM/data/dflex-hopper/ep_data_HopperEnv_ep131072_1.pt
-  # pretrain: /storage/home/hcoda1/7/igeorgiev3/git/FoWM/data/dflex-cartpole/ep_data_CartPoleSwingUpEnv_ep67584_1.pt
-  pretrain_steps: 50000
+  checkpoint: # model checkpoint to lead
+  checkpoint_with_buffer: False # whether to load buffer too
+  eval_runs: 12 # number of env evals to do at end of training
+  pretrain: # if provided, will pretrain model on this data before running environment
+  pretrain_steps: 50000 # how many gradient steps to pretrain for
 
 wandb:
   project: fowm

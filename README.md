@@ -63,6 +63,43 @@ python train_multitask.py -cn config_mt30 general.run_wandb=True wandb.group=mt3
 
 We also provide scripts which launch slurm tasks across all tasks. `scripts/mt30.bash` and `scripts/mt80.bash`
 
+### Configs
+```
+cfg
+├── alg
+│   ├── pwm_19M.yaml - different sized PWM models which the main models that should be used. Paired with train_multitask.py
+│   ├── pwm_317M.yaml - to be used with train_multitask.py
+│   ├── pwm_48M.yaml 
+│   ├── pwm_5M.yaml
+│   ├── pwm.yaml - redunant but provided for reproducability; to be run with train_dflex.py
+│   └── shac.yaml - works only with train_dflex.py
+├── config_mt30.yaml - to be used with train_multitask.py
+├── config_mt80.yaml - to be used with train_multitask.py
+├── config.yaml  - to be used with train_dflex.py
+└── env - dflex env config files
+    ├── dflex_ant.yaml
+    ├── dflex_anymal.yaml
+    ├── dflex_cartpole.yaml
+    ├── dflex_doublependulum.yaml
+    ├── dflex_hopper.yaml
+    ├── dflex_humanoid.yaml
+    └── dflex_snu_humanoid.yaml
+```
+
+## Citation
+
+
+```
+@misc{georgiev2024pwm,
+    title={PWM: Policy Learning with Large World Models},
+    author={Ignat Georgiev, Varun Giridha, Nicklas Hansen, and Animesh Garg},
+    eprint={2405.18418},  # TODO update
+    archivePrefix={arXiv},
+    primaryClass={cs.LG},
+    year={2024}
+}
+```
+
 # TODOs
 
 - [x] upload pedagogical models
@@ -75,6 +112,6 @@ We also provide scripts which launch slurm tasks across all tasks. `scripts/mt30
 - [x] train new dflex models and confirm that they work
 - [x] update and commit results
 - [x] write up readme
-- [ ] clean up and commit changes
+- [x] clean up and commit changes
 - [ ] replicate results from readme
 

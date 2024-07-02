@@ -201,9 +201,9 @@ def train(cfg: dict):
     seeding(cfg.general.seed)
 
     task = cfg.task
-    task_set = TASK_SET["mt80"] if "mt80" in cfg.data_dir else TASK_SET["mt30"]
+    task_set = TASK_SET["mt80"] if "mt80" in cfg.general.data_dir else TASK_SET["mt30"]
     task_id = task_set.index(task)
-    if "mt80" in cfg.data_dir:
+    if "mt80" in cfg.general.data_dir:
         cfg.alg.world_model_config.task_dim = 96
     else:
         cfg.alg.world_model_config.task_dim = 64
@@ -233,7 +233,7 @@ def train(cfg: dict):
         act_dim=act_dim,
         env=None,
         logdir=logdir,
-        max_epochs=cfg.epochs,
+        max_epochs=cfg.general.epochs,
     )
 
     # load model
@@ -241,11 +241,11 @@ def train(cfg: dict):
         agent.load_wm(cfg.general.checkpoint)
         agent.wm_bootstrapped = True
 
-    cfg.episode_length = 101 if "mt80" in cfg.data_dir else 501
+    cfg.episode_length = 101 if "mt80" in cfg.general.data_dir else 501
     cfg.buffer.buffer_size = 24000 * cfg.episode_length
     buffer = instantiate(cfg.buffer)
 
-    fp = Path(os.path.join(cfg.data_dir, "*.pt"))
+    fp = Path(os.path.join(cfg.general.data_dir, "*.pt"))
     fps = sorted(glob(str(fp)))
     assert len(fps) > 0, f"No data found at {fp}"
     print(f"Found {len(fps)} files in {fp}")
@@ -269,10 +269,10 @@ def train(cfg: dict):
     start_time = time()
     task_ids = torch.tensor([task_id] * cfg.buffer.batch_size, device=agent.device)
     metrics_log = []
-    for i in range(cfg.epochs):
+    for i in range(cfg.general.epochs):
         agent.update_lrs(i)
         obs, act, rew = buffer.sample()
-        train_metrics = agent.update(obs, act, rew, task_ids, cfg.finetune_wm)
+        train_metrics = agent.update(obs, act, rew, task_ids, cfg.general.finetune_wm)
 
         metrics = {
             "iteration": i,
@@ -281,7 +281,7 @@ def train(cfg: dict):
         metrics.update(train_metrics)
 
         # Evaluate agent periodically
-        if i % cfg.eval_freq == 0:
+        if i % cfg.general.eval_freq == 0:
             metrics.update(eval(agent, env, task_set, task_id, cfg.general.eval_runs))
             reward = metrics[f"episode_reward"]
             print(f"R: {reward:.2f}")
@@ -294,7 +294,7 @@ def train(cfg: dict):
             print(
                 "[{:}/{:}]  AL:{:.3f}  VL:{:.3f}  WML:{:.3f}".format(
                     i,
-                    cfg.epochs,
+                    cfg.general.epochs,
                     metrics["actor_loss"],
                     metrics["value_loss"],
                     metrics["wm_loss"],

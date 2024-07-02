@@ -40,7 +40,7 @@ discount_min: 0.95
 discount_max: 0.995
 buffer_size: 1_000_000 # minimum must be 1000 x num_envs
 exp_name: default
-data_dir: /storage/home/hcoda1/7/igeorgiev3/git/FoWM/data/dflex-doublependulum
+data_dir: 
 offline: True
 
 # planning
@@ -77,8 +77,8 @@ dropout: 0.01
 simnorm_dim: 8
 
 # logging
-wandb_project: fowm
-wandb_entity: pair-diffusion
+wandb_project: 
+wandb_entity: 
 wandb_silent: false
 disable_wandb: true
 save_csv: true

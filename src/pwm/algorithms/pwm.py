@@ -26,7 +26,7 @@ tensordict.set_lazy_legacy(False).set()
 
 class PWM:
     """
-    Policy learning through World Models
+    Policy learning with large World Models
     """
 
     def __init__(
@@ -180,7 +180,6 @@ class PWM:
                 {"params": self.wm._encoder.parameters()},
                 {"params": self.wm._dynamics.parameters()},
                 {"params": self.wm._reward.parameters()},
-                # {"params": self.wm._terminate.parameters()},
                 {"params": (self.wm._task_emb.parameters() if False else [])},
             ],
             lr=self.model_lr,
@@ -414,8 +413,6 @@ class PWM:
             # self.episode_length += 1
             rollout_len += 1
 
-            # TODO need to handle gamma correctly here between pwm and pwm_offline
-            # TODO almost two_hot_inv is new here. TODO rerun experiments
             rew_acc[i + 1, :] = rew_acc[i, :] + gamma * rew
 
             next_values[i + 1] = self.critic(z).min(dim=0).values.squeeze()
@@ -434,7 +431,6 @@ class PWM:
 
             # for all done envs we reset observations and cut off gradients
             # Note this is important to do after critic next value compuataion!
-            # TODO should I do the below conditionally?
             if self.env:
                 done = gt_term | gt_trunc
                 done_env_ids = gt_done.nonzero(as_tuple=False).squeeze(-1)
@@ -621,7 +617,6 @@ class PWM:
 
     def train(self):
 
-        # TODO I think this function is redundant
         self.init_buffers()
 
         # save initial policy for reproducibility
@@ -1225,7 +1220,7 @@ class PWM:
         z = self.wm.encode(obs, task)
         a = self.actor(z, deterministic)
         return torch.tanh(a).cpu().detach().flatten()
-    
+
     def update_lrs(self, epoch):
         # learning rate schedule
         if self.lr_schedule == "linear":

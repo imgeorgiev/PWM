@@ -5,7 +5,7 @@ import math
 
 
 def seeding(seed=0, torch_deterministic=False):
-    # print("Setting seed: {}".format(seed))
+    print("Setting seed: {}".format(seed))
 
     random.seed(seed)
     np.random.seed(seed)
