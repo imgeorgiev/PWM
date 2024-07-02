@@ -1,7 +1,7 @@
 defaults:
   - _self_
   - env: dflex_ant
-  - alg: shac
+  - alg: pwm
 
 general:
   train: True
@@ -17,6 +17,6 @@ general:
   pretrain_steps: 50000 # how many gradient steps to pretrain for
 
 wandb:
-  project: fowm
-  entity: pair-diffusion
+  project: 
+  entity: 
   group: 

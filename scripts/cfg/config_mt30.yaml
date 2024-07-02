@@ -33,7 +33,8 @@ episode_length: ???
 obs_shapes: ???
 action_dims: ???
 episode_lengths: ???
-horizon: 15
+seed_steps: ???
+horizon: 16
 
 buffer:
   _target_: pwm.utils.buffer.Buffer

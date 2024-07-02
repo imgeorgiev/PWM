@@ -17,8 +17,8 @@ general:
   finetune_wm: False
 
 wandb:
-  project: fowm
-  entity: pair-diffusion
+  project:
+  entity:
   group: 
 
 # environment settings from TDMPC2

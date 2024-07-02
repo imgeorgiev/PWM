@@ -2,13 +2,13 @@
 
 [Ignat Georgiev](https://www.imgeorgiev.com/), [Varun Giridhar](https://www.linkedin.com/in/varun-giridhar-463947146/), [Nicklas Hansen](https://www.nicklashansen.com/), [Animesh Garg](https://animesh.garg.tech/)
 
-[Project website](https://policy-world-model.github.io/)  [Paper](TODO)  [Models & Datasets](https://huggingface.co/imgeorgiev/pwm)
+[Project website](http://imgeorgiev.com/pwm)  [Paper](TODO)  [Models & Datasets](https://huggingface.co/imgeorgiev/pwm)
 
 This repository is a soft fork of [FoRL](https://github.com/pairlab/FoRL).
 
 ## Overview
 
-![](https://policy-world-model.github.io/media/wm-animation.mp4)
+![](figures/teaser.png)
 
 Instead of building world models into algorithms, we propose using large-scale multi-task world models as
 differentiable simulators for policy learning. When well-regularized, these models enable efficient policy
@@ -20,11 +20,17 @@ each without the need for expensive online planning.
 
 Tested only on Ubuntu 22.04. Requires Python, conda and an Nvidia GPU with >24GB VRAM.
 
-1. `git clone --recursive git@github.com:imgeorgiev/PWM.git`
-2. `cd PWM`
-3. `conda env create -f environment.yaml`
-4. `ln -s $CONDA_PREFIX/lib $CONDA_PREFIX/lib64` (hack to get CUDA to work inside conda)
-5. `pip install -e .`
+```bash
+git clone --recursive git@github.com:imgeorgiev/PWM.git
+cd PWM
+conda env create -f environment.yaml
+conda activate pwm
+ln -s $CONDA_PREFIX/lib $CONDA_PREFIX/lib64  # hack to get CUDA to work inside conda
+pip install -e .
+pip install -e external/tdmpc2
+```
+
+
 
 ## Single environment tasks
 
@@ -32,11 +38,32 @@ The first option for running PWM is on complex single-tasks with up to 152 actio
 
 ```
 cd scripts
-conda activate forl
+conda activate pwm
 python train_dflex.py env=dflex_ant alg=pwm general.checkpoint=path/to/model
 ```
 
 > Due to the nature of GPU acceleration, it is impossible to currently impossible to guarantee deterministic experiments. You can make them "less random" by using `seeding(seed, True)` but that slows down GPUs.
+
+### Single environment with pretraining
+
+Instead of loading a pre-trained world model, you pretrain one yourself using the [data](https://huggingface.co/imgeorgiev/pwm/tree/main/dflex/data):
+
+```
+cd scripts
+conda activate pwm
+python train_dflex.py env=dflex_ant alg=pwm general.pretrain=path/to/model pretrain_steps=XX
+```
+
+To recreate results from the original paper:
+
+| Task | Pretrain gradient steps |
+| -- | -- |
+| Hopper | 50_000 |
+| Ant | 100_000 |
+| Anymal | 100_000 |
+| Humanoid | 200_000 | 
+| SNU Humanoid | 200_000 |
+
 
 ## Multitask setting
 
@@ -44,12 +71,14 @@ python train_dflex.py env=dflex_ant alg=pwm general.checkpoint=path/to/model
 
 We evaluate on the MT30 and MT80 task settings proposed by [TDMPC2](https://www.tdmpc2.com/).
 
-1. Download the data for each task following the [TDMPC2 instructions](https://www.tdmpc2.com/dataset)
-2. Train a world model from the TDMPC2 repository using the settings below. Note that `horizon=15` and `rho=0.99` are crucial. Note that training takes ~2 weeks on an RTX 3900. Alternatively, you can also use some of the pre-trained [multi-task world models we provide](https://huggingface.co/imgeorgiev/pwm/tree/main/multitask).
+1. Download the data for each task following the [TDMPC2 instructions](https://www.tdmpc2.com/dataset).
+2. Train a world model from the TDMPC2 repository using the settings below. Note that `horizon=16` and `rho=0.99` are crucial. Note that training takes ~2 weeks on an RTX 3900. Alternatively, you can also use some of the pre-trained [multi-task world models we provide](https://huggingface.co/imgeorgiev/pwm/tree/main/multitask).
 ```
 cd external/tdmpc2/tdmpc2
-python -u train.py task=mt30 model_size=48 horizon=15 batch_size=1024 rho=0.99 mpc=false disable_wandb=False data_dir=path/to/data
+python -u train.py task=mt30 model_size=48 horizon=16 batch_size=1024 rho=0.99 mpc=false disable_wandb=False data_dir=path/to/data
 ```
+
+where `path/to/data` is the full TDMPC2 dataset for either MT30 or MT80.
 
 
 ### Evaluate multi-task
@@ -58,8 +87,11 @@ Train a policy for a specific task using the pre-trained world model
 
 ```
 cd scripts
-python train_multitask.py -cn config_mt30 general.run_wandb=True wandb.group=mt30 alg=pwm_48M task=pendulum-swingup
+python train_multitask.py -cn config_mt30 alg=pwm_48M task=pendulum-swingup general.data_dir=path/to/data general.checkpoint=path/to/model
 ```
+
+- where `path/to/data` is the full TDMPC2 dataset for either MT30 or MT80.
+- where `path/to/model` is the pre-trained world model as provided [here](https://huggingface.co/imgeorgiev/pwm/tree/main/multitask).
 
 We also provide scripts which launch slurm tasks across all tasks. `scripts/mt30.bash` and `scripts/mt80.bash`
 
@@ -99,19 +131,4 @@ cfg
     year={2024}
 }
 ```
-
-# TODOs
-
-- [x] upload pedagogical models
-- [x] figure out which version of PWM I ran
-- [x] find pretrained models for each env
-- [x] upload data for each env
-- [x] Upload multi-task models
-- [x] merge PWM online and offline into the same model
-- [x] figure out a way to integrate world model with and without terminate into one
-- [x] train new dflex models and confirm that they work
-- [x] update and commit results
-- [x] write up readme
-- [x] clean up and commit changes
-- [ ] replicate results from readme
 
