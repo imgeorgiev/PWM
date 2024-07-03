@@ -10,10 +10,7 @@ This repository is a soft fork of [FoRL](https://github.com/pairlab/FoRL).
 
 ![](figures/teaser.png)
 
-Instead of building world models into algorithms, we propose using large-scale multi-task world models as
-differentiable simulators for policy learning. When well-regularized, these models enable efficient policy
-learning with first-order gradient optimization. This allows PWM to learn to solve 80 tasks in < 10 minutes
-each without the need for expensive online planning.
+We introduce Policy learning with large World Models (PWM), a novel Model-Based RL (MBRL) algorithm and framework aimed at deriving effective continuous control policies from large, muti-task world models. We utilize pre-trained TD-MPC2 world models to efficiently learn control policies with first-order gradients in <10m per task. Our empirical evaluations on complex locomotion tasks indicate that PWM not only achieves higher reward than baselines but also outperforms methods that use ground-truth simulation dynamics.
 
 
 ## Installation
@@ -69,16 +66,16 @@ To recreate results from the original paper:
 
 ### Training large world model
 
-We evaluate on the MT30 and MT80 task settings proposed by [TDMPC2](https://www.tdmpc2.com/).
+We evaluate on the MT30 and MT80 task settings proposed by [TD-MPC2](https://www.tdmpc2.com/).
 
-1. Download the data for each task following the [TDMPC2 instructions](https://www.tdmpc2.com/dataset).
-2. Train a world model from the TDMPC2 repository using the settings below. Note that `horizon=16` and `rho=0.99` are crucial. Note that training takes ~2 weeks on an RTX 3900. Alternatively, you can also use some of the pre-trained [multi-task world models we provide](https://huggingface.co/imgeorgiev/pwm/tree/main/multitask).
+1. Download the data for each task following the [TD-MPC2 instructions](https://www.tdmpc2.com/dataset).
+2. Train a world model from the TD-MPC2 repository using the settings below. Note that `horizon=16` and `rho=0.99` are crucial. Note that training takes ~2 weeks on an RTX 3900. Alternatively, you can also use some of the pre-trained [multi-task world models we provide](https://huggingface.co/imgeorgiev/pwm/tree/main/multitask).
 ```
 cd external/tdmpc2/tdmpc2
 python -u train.py task=mt30 model_size=48 horizon=16 batch_size=1024 rho=0.99 mpc=false disable_wandb=False data_dir=path/to/data
 ```
 
-where `path/to/data` is the full TDMPC2 dataset for either MT30 or MT80.
+where `path/to/data` is the full TD-MPC2 dataset for either MT30 or MT80.
 
 
 ### Evaluate multi-task
@@ -90,7 +87,7 @@ cd scripts
 python train_multitask.py -cn config_mt30 alg=pwm_48M task=pendulum-swingup general.data_dir=path/to/data general.checkpoint=path/to/model
 ```
 
-- where `path/to/data` is the full TDMPC2 dataset for either MT30 or MT80.
+- where `path/to/data` is the full TD-MPC2 dataset for either MT30 or MT80.
 - where `path/to/model` is the pre-trained world model as provided [here](https://huggingface.co/imgeorgiev/pwm/tree/main/multitask).
 
 We also provide scripts which launch slurm tasks across all tasks. `scripts/mt30.bash` and `scripts/mt80.bash`
