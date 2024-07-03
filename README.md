@@ -2,7 +2,7 @@
 
 [Ignat Georgiev](https://www.imgeorgiev.com/), [Varun Giridhar](https://www.linkedin.com/in/varun-giridhar-463947146/), [Nicklas Hansen](https://www.nicklashansen.com/), [Animesh Garg](https://animesh.garg.tech/)
 
-[Project website](http://imgeorgiev.com/pwm)  [Paper](TODO)  [Models & Datasets](https://huggingface.co/imgeorgiev/pwm)
+[Project website](http://imgeorgiev.com/pwm)  [Paper](https://arxiv.org/abs/2407.02466)  [Models & Datasets](https://huggingface.co/imgeorgiev/pwm)
 
 This repository is a soft fork of [FoRL](https://github.com/pairlab/FoRL).
 
@@ -125,7 +125,7 @@ cfg
 @misc{georgiev2024pwm,
     title={PWM: Policy Learning with Large World Models},
     author={Ignat Georgiev, Varun Giridha, Nicklas Hansen, and Animesh Garg},
-    eprint={2405.18418},  # TODO update
+    eprint={2407.02466},
     archivePrefix={arXiv},
     primaryClass={cs.LG},
     year={2024}
