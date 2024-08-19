@@ -1,4 +1,4 @@
-name: pwm2
+name: pwm
 channels:
   - pytorch
   - defaults
